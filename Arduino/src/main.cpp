@@ -30,7 +30,7 @@ void setup() {
 
     SMDSFiniteStateMachine* fsm = new SMDSFiniteStateMachine();
 
-    LCDManager* lcdManager = new LCDManager();
+    LCDManager* lcd = new LCDManager(fsm);
 
     TemperatureTask* temperatureTask = new TemperatureTask(fsm);
     scheduler.addTask(temperatureTask);
