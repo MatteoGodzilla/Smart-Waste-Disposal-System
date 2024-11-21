@@ -5,19 +5,23 @@ LCDManager::LCDManager(SMDSFiniteStateMachine* finiteStateMachine) {
     lcd->init();
     lcd->backlight();
     fsm = finiteStateMachine;
+    lastState = SLEEPING;
 }
 
-void LCDManager::updateLCD() {
-    switch(fsm->state) {
-        case AVAILABLE:
-            break;
-        case ACCEPTING_WASTE:
-            break;
-        case FULL:
-            break;
-        case OVERHEATING:
-            break;
-        case SLEEPING:
-            break;
+void LCDManager::execute() {
+    if(lastState != fsm->state){
+        switch(fsm->state) {
+            case AVAILABLE:
+                break;
+            case ACCEPTING_WASTE:
+                break;
+            case FULL:
+                break;
+            case OVERHEATING:
+                break;
+            case SLEEPING:
+                break;
+        }
+        lastState = fsm->state;
     }
 }

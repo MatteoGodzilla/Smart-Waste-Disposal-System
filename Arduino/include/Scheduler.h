@@ -2,7 +2,7 @@
 
 #include "Task.h"
 
-#define NUMTASKS 4
+#define NUMTASKS 5
 
 class Scheduler {
 

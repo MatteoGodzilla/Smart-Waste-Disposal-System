@@ -30,7 +30,7 @@ void setup() {
 
     SMDSFiniteStateMachine* fsm = new SMDSFiniteStateMachine();
 
-    LCDManager* lcd = new LCDManager(fsm);
+
 
     TemperatureTask* temperatureTask = new TemperatureTask(fsm);
     scheduler.addTask(temperatureTask);
@@ -43,6 +43,9 @@ void setup() {
 
     SleepTask* sleepTask = new SleepTask(fsm);
     scheduler.addTask(sleepTask);
+
+    LCDManager* lcd = new LCDManager(fsm);
+    scheduler.addTask(lcd);
 }
 
 void loop() {
