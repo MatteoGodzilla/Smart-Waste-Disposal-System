@@ -8,6 +8,7 @@
 #include "DashboardTask.h"
 #include "WasteTask.h"
 #include "SleepTask.h"
+#include "LCDManager.h"
 
 Scheduler scheduler;
 
@@ -26,6 +27,8 @@ void setup() {
 
     //Initialize scheduler and tasks
 	scheduler.init();
+
+    LCDManager* lcdManager = new LCDManager();
 
     TemperatureTask* temperatureTask = new TemperatureTask();
     scheduler.addTask(temperatureTask);
