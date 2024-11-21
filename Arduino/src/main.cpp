@@ -2,16 +2,44 @@
 #include <Wire.h>
 
 #include "pins.h"
+
 #include "Scheduler.h"
+#include "TemperatureTask.h"
+#include "DashboardTask.h"
+#include "WasteTask.h"
+#include "SleepTask.h"
 
 Scheduler scheduler;
 
 void setup() {
-  // put your setup code here, to run once:
-  scheduler.init();
+    //Initialize pins
+    pinMode(L1, OUTPUT);
+    pinMode(L2, OUTPUT);
+    pinMode(MOTOR, OUTPUT);
+    pinMode(SONAR_ECHO, OUTPUT);
+
+    pinMode(OPEN_BTN, INPUT);
+    pinMode(CLOSE_BTN, INPUT);
+    pinMode(PIR, INPUT);
+    pinMode(TEMP, INPUT);
+    pinMode(SONAR_TRIG, INPUT);
+
+    //Initialize scheduler and tasks
+	scheduler.init();
+
+    TemperatureTask* temperatureTask = new TemperatureTask();
+    scheduler.addTask(temperatureTask);
+
+    DashboardTask* dashboardTask = new DashboardTask();
+    scheduler.addTask(dashboardTask);
+
+    WasteTask* wasteTask = new WasteTask();
+    scheduler.addTask(wasteTask);
+
+    SleepTask* sleepTask = new SleepTask();
+    scheduler.addTask(sleepTask);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  scheduler.schedule();
+	scheduler.schedule();
 }
