@@ -30,8 +30,6 @@ void setup() {
 
     SMDSFiniteStateMachine* fsm = new SMDSFiniteStateMachine();
 
-
-
     TemperatureTask* temperatureTask = new TemperatureTask(fsm);
     scheduler.addTask(temperatureTask);
 

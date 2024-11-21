@@ -3,6 +3,7 @@
 enum State{
     AVAILABLE,
     ACCEPTING_WASTE,
+    WASTE_RECEIVED,
     FULL,
     OVERHEATING,
     SLEEPING
