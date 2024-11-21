@@ -1,18 +1,13 @@
 #pragma once
 #include "Task.h"
-
-enum WasteState{
-    AVAILABLE,
-    ACCEPTING_WASTE,
-    FULL
-};
+#include "SMDSFiniteStateMachine.h"
 
 class WasteTask : public Task {
 private:
-    WasteState state;
+    SMDSFiniteStateMachine* fsm;
     void executeState();
-    void transitionState();
+    void changeState();
 public:
-    WasteTask();
+    WasteTask(SMDSFiniteStateMachine* finiteStateMachine);
     virtual void execute() override;
 };

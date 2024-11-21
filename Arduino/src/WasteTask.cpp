@@ -1,17 +1,17 @@
 #include "WasteTask.h"
 
-WasteTask::WasteTask(){
+WasteTask::WasteTask(SMDSFiniteStateMachine* finiteStateMachine){
     active = true;
-    state = ACCEPTING_WASTE;
+    fsm = finiteStateMachine;
 }
 
 void WasteTask::execute(){
-    transitionState();
+    changeState();
     executeState();
 }
 
-void WasteTask::transitionState(){
-    switch(state){
+void WasteTask::changeState(){
+    switch(fsm->state){
         case AVAILABLE:
             break;
         case ACCEPTING_WASTE:
@@ -22,7 +22,7 @@ void WasteTask::transitionState(){
 }
 
 void WasteTask::executeState(){
-    switch(state){
+    switch(fsm->state){
         case AVAILABLE:
             break;
         case ACCEPTING_WASTE:
