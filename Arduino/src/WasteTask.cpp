@@ -16,6 +16,8 @@ void WasteTask::changeState(){
             break;
         case ACCEPTING_WASTE:
             break;
+        case WASTE_RECEIVED:
+            break;
         case FULL:
             break;
     }
@@ -26,6 +28,8 @@ void WasteTask::executeState(){
         case AVAILABLE:
             break;
         case ACCEPTING_WASTE:
+            break;
+        case WASTE_RECEIVED:
             break;
         case FULL:
             break;
