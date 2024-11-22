@@ -5,6 +5,7 @@ enum State{
     ACCEPTING_WASTE,
     WASTE_RECEIVED,
     FULL,
+    EMPTYING,
     OVERHEATING,
     SLEEPING
 };

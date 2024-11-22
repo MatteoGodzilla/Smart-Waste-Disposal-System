@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <Wire.h>
-
+#include <Servo.h>
 #include "pins.h"
 #include "Scheduler.h"
 #include "TemperatureTask.h"
@@ -25,6 +25,8 @@ void setup() {
     pinMode(TEMP, INPUT);
     pinMode(SONAR_ECHO, INPUT);
 
+    //Initialize libraries
+    
     //Initialize scheduler and tasks
 	scheduler.init();
 
