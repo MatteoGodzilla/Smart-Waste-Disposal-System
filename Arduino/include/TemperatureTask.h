@@ -15,7 +15,8 @@ private:
     float tempPrev = 0.0;
     unsigned long time;
 public:
-    TemperatureTask(SMDSFiniteStateMachine* finiteStateMachine);
-    void bind(DashboardTask* dTask);
+    TemperatureTask();
+    void bindFSM(SMDSFiniteStateMachine* fsmTask);
+    void bindDashboard(DashboardTask* dTask);
     virtual void execute() override;
 };

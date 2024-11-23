@@ -1,8 +1,10 @@
 #pragma once
 #include <Arduino.h>
+#include <Servo.h>
 #include "Task.h"
 #include "pins.h"
 #include "SMDSFiniteStateMachine.h"
+#include "DashboardTask.h"
 #include "LCDManager.h"
 
 #define MAX_ANGLE 90
@@ -21,12 +23,15 @@
 class WasteTask : public Task {
 private:
     SMDSFiniteStateMachine* fsm;
+    DashboardTask* dashboardTask;
     Servo motor;
     signed short angle;
     void executeState();
     void changeState();
     float getFillPercentage();
 public:
-    WasteTask(SMDSFiniteStateMachine* finiteStateMachine);
+    WasteTask();
+    void bindFSM(SMDSFiniteStateMachine* fsmTask);
+    void bindDashboard(DashboardTask* dTask);
     virtual void execute() override;
 };

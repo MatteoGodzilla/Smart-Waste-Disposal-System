@@ -1,11 +1,14 @@
 #include "LCDManager.h"
 
-LCDManager::LCDManager(SMDSFiniteStateMachine* finiteStateMachine) {
+LCDManager::LCDManager() {
     lcd = new LiquidCrystal_I2C(0x27,20,4);
     lcd->init();
     lcd->backlight();
-    fsm = finiteStateMachine;
     lastState = SLEEPING;
+}
+
+void LCDManager::bindFSM(SMDSFiniteStateMachine* fsmTask) {
+    fsm = fsmTask;
 }
 
 void LCDManager::execute() {
@@ -37,6 +40,8 @@ void LCDManager::execute() {
                 lcd->print("PROBLEM DETECTED");
                 break;
             case SLEEPING:
+                lcd->clear();
+                lcd->noBacklight();
                 break;
         }
         lastState = fsm->state;

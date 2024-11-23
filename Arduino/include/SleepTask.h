@@ -6,6 +6,7 @@ class SleepTask : public Task {
 private:
     SMDSFiniteStateMachine* fsm;
 public:
-    SleepTask(SMDSFiniteStateMachine* finiteStateMachine);
+    SleepTask();
+    void bindFSM(SMDSFiniteStateMachine* fsmTask);
     virtual void execute() override;
 };

@@ -1,8 +1,11 @@
 #include "SleepTask.h"
 
-SleepTask::SleepTask(SMDSFiniteStateMachine* finiteStateMachine){
+SleepTask::SleepTask(){
     active = true;
-    fsm = finiteStateMachine;
+}
+
+void SleepTask::bindFSM(SMDSFiniteStateMachine* fsmTask) {
+    fsm = fsmTask;
 }
 
 void SleepTask::execute(){

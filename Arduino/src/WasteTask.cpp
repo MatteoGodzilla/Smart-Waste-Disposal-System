@@ -1,10 +1,17 @@
 #include "WasteTask.h"
 
-WasteTask::WasteTask(SMDSFiniteStateMachine* finiteStateMachine){
+WasteTask::WasteTask(){
     active = true;
     angle = 0;
     motor.attach(MOTOR);
-    fsm = finiteStateMachine;
+}
+
+void WasteTask::bindFSM(SMDSFiniteStateMachine* fsmTask) {
+    fsm = fsmTask;
+}
+
+void WasteTask::bindDashboard(DashboardTask* dTask) {
+    dashboardTask = dTask;
 }
 
 void WasteTask::execute(){

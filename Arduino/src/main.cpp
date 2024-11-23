@@ -26,26 +26,36 @@ void setup() {
     pinMode(SONAR_ECHO, INPUT);
 
     //Initialize libraries
-    
+
     //Initialize scheduler and tasks
 	scheduler.init();
 
     SMDSFiniteStateMachine* fsm = new SMDSFiniteStateMachine();
 
-    TemperatureTask* temperatureTask = new TemperatureTask(fsm);
+    TemperatureTask* temperatureTask = new TemperatureTask();
     scheduler.addTask(temperatureTask);
 
     DashboardTask* dashboardTask = new DashboardTask();
     scheduler.addTask(dashboardTask);
 
-    WasteTask* wasteTask = new WasteTask(fsm);
+    WasteTask* wasteTask = new WasteTask();
     scheduler.addTask(wasteTask);
 
-    SleepTask* sleepTask = new SleepTask(fsm);
+    SleepTask* sleepTask = new SleepTask();
     scheduler.addTask(sleepTask);
 
-    LCDManager* lcd = new LCDManager(fsm);
+    LCDManager* lcd = new LCDManager();
     scheduler.addTask(lcd);
+
+    //Bind tasks each other if necessary
+    temperatureTask->bindFSM(fsm);
+    temperatureTask->bindDashboard(dashboardTask);
+    dashboardTask->bindTemp(temperatureTask);
+    dashboardTask->bindWaste(wasteTask);
+    wasteTask->bindFSM(fsm);
+    wasteTask->bindDashboard(dashboardTask);
+    sleepTask->bindFSM(fsm);
+    lcd->bindFSM(fsm);
 }
 
 void loop() {

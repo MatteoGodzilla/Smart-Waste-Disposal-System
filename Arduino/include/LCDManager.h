@@ -9,7 +9,8 @@ private:
     SMDSFiniteStateMachine* fsm;
     State lastState;
 public:
-    LCDManager(SMDSFiniteStateMachine* finiteStateMachine);
+    LCDManager();
+    void bindFSM(SMDSFiniteStateMachine* fsmTask);
     void execute() override;
 
 };

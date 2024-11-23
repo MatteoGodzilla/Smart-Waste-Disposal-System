@@ -1,11 +1,14 @@
 #include "TemperatureTask.h"
 
-TemperatureTask::TemperatureTask(SMDSFiniteStateMachine* finiteStateMachine){
+TemperatureTask::TemperatureTask(){
     active = true;
-    fsm = finiteStateMachine;
 }
 
-void TemperatureTask::bind(DashboardTask* dTask) {
+void TemperatureTask::bindFSM(SMDSFiniteStateMachine* fsmTask) {
+    fsm = fsmTask;
+}
+
+void TemperatureTask::bindDashboard(DashboardTask* dTask) {
     dashboardTask = dTask;
 }
 
