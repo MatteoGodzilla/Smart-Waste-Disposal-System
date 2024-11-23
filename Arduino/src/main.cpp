@@ -27,7 +27,7 @@ void setup() {
 
     //Initialize libraries
 
-    //Initialize scheduler and tasks
+    //Initialize scheduler and create tasks
 	scheduler.init();
 
     SMDSFiniteStateMachine* fsm = new SMDSFiniteStateMachine();

@@ -15,6 +15,7 @@ void LCDManager::execute() {
     if(lastState != fsm->state){
         switch(fsm->state) {
             case AVAILABLE:
+                lcd->backlight();
                 lcd->clear();
                 lcd->setCursor(0,0);
                 lcd->print("PRESS OPEN TO ENTER WASTE");
