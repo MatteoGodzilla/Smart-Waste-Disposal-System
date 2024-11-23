@@ -1,3 +1,6 @@
 [submodule "pc/serial"]
 	path = pc/serial
 	url = https://github.com/wjwwood/serial.git
+[submodule "pc/wxCharts"]
+	path = pc/wxCharts
+	url = https://github.com/wxIshiko/wxCharts.git
