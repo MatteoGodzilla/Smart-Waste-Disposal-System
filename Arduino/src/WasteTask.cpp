@@ -111,3 +111,7 @@ void WasteTask::executeState(){
             break;
     }
 }
+
+void WasteTask::onEmptyEvent(){
+    
+}

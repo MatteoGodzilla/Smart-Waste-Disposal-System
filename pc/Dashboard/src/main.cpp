@@ -1,17 +1,11 @@
 #include <wx/wx.h>
-
-class MyFrame : public wxFrame {
-public:
-	MyFrame()
-		: wxFrame(NULL, wxID_ANY, "Hello World", wxDefaultPosition, wxSize(1024,768))
-	{}
-};
+#include "MainWindow.h"
 
 class Main : public wxApp {
 public:
 	bool OnInit() override {
-		MyFrame* frame = new MyFrame();
-		frame->Show();
+		MainWindow* window = new MainWindow();
+		window->Show();
 		return true;
 	};
 };
