@@ -3,14 +3,17 @@
 #include "TemperatureTask.h"
 #include "WasteTask.h"
 
-class DashboardTask : public Task {
+class SerialCommunicator : public Task {
 private:
     TemperatureTask* temperatureTask;
     WasteTask* wasteTask;
 
 public:
-    DashboardTask();
+    SerialCommunicator();
     void bindTemp(TemperatureTask* tTask);
     void bindWaste(WasteTask* wTask);
+
+    void sendTemperature(float celsius);
+    void sendFillPercentage(float percentage);
     virtual void execute() override;
 };

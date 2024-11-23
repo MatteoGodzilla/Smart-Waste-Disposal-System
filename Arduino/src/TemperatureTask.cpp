@@ -8,8 +8,8 @@ void TemperatureTask::bindFSM(SMDSFiniteStateMachine* fsmTask) {
     fsm = fsmTask;
 }
 
-void TemperatureTask::bindDashboard(DashboardTask* dTask) {
-    dashboardTask = dTask;
+void TemperatureTask::bindSerialCommunicator(SerialCommunicator* dTask) {
+    scTask = dTask;
 }
 
 void TemperatureTask::execute(){
@@ -31,4 +31,9 @@ void TemperatureTask::execute(){
         }
     }
     tempPrev = temp;
+}
+
+//called by
+void TemperatureTask::onFixTemperatureEvent(){
+
 }

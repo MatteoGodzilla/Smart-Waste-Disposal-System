@@ -10,8 +10,8 @@ void WasteTask::bindFSM(SMDSFiniteStateMachine* fsmTask) {
     fsm = fsmTask;
 }
 
-void WasteTask::bindDashboard(DashboardTask* dTask) {
-    dashboardTask = dTask;
+void WasteTask::bindSerialCommunicator(SerialCommunicator* dTask) {
+    scTask = dTask;
 }
 
 void WasteTask::execute(){

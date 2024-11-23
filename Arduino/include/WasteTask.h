@@ -4,7 +4,7 @@
 #include "Task.h"
 #include "pins.h"
 #include "SMDSFiniteStateMachine.h"
-#include "DashboardTask.h"
+#include "SerialCommunicator.h"
 #include "LCDManager.h"
 
 #define MAX_ANGLE 90
@@ -23,7 +23,7 @@
 class WasteTask : public Task {
 private:
     SMDSFiniteStateMachine* fsm;
-    DashboardTask* dashboardTask;
+    SerialCommunicator* scTask;
     Servo motor;
     signed short angle;
     void executeState();
@@ -32,6 +32,7 @@ private:
 public:
     WasteTask();
     void bindFSM(SMDSFiniteStateMachine* fsmTask);
-    void bindDashboard(DashboardTask* dTask);
+    void bindSerialCommunicator(SerialCommunicator* dTask);
+    void onEmptyEvent();
     virtual void execute() override;
 };

@@ -4,7 +4,7 @@
 #include "pins.h"
 #include "Scheduler.h"
 #include "TemperatureTask.h"
-#include "DashboardTask.h"
+#include "SerialCommunicator.h"
 #include "WasteTask.h"
 #include "SleepTask.h"
 #include "LCDManager.h"
@@ -35,8 +35,8 @@ void setup() {
     TemperatureTask* temperatureTask = new TemperatureTask();
     scheduler.addTask(temperatureTask);
 
-    DashboardTask* dashboardTask = new DashboardTask();
-    scheduler.addTask(dashboardTask);
+    SerialCommunicator* serialCommunicatorTask = new SerialCommunicator();
+    scheduler.addTask(serialCommunicatorTask);
 
     WasteTask* wasteTask = new WasteTask();
     scheduler.addTask(wasteTask);
@@ -49,11 +49,11 @@ void setup() {
 
     //Bind tasks each other if necessary
     temperatureTask->bindFSM(fsm);
-    temperatureTask->bindDashboard(dashboardTask);
-    dashboardTask->bindTemp(temperatureTask);
-    dashboardTask->bindWaste(wasteTask);
+    temperatureTask->bindSerialCommunicator(serialCommunicatorTask);
+    serialCommunicatorTask->bindTemp(temperatureTask);
+    serialCommunicatorTask->bindWaste(wasteTask);
     wasteTask->bindFSM(fsm);
-    wasteTask->bindDashboard(dashboardTask);
+    wasteTask->bindSerialCommunicator(serialCommunicatorTask);
     sleepTask->bindFSM(fsm);
     lcd->bindFSM(fsm);
 }
