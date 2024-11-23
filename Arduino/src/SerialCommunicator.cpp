@@ -1,5 +1,8 @@
 #include "SerialCommunicator.h"
 
+#include "TemperatureTask.h"
+#include "WasteTask.h"
+
 SerialCommunicator::SerialCommunicator(){
     active = true;
 }
@@ -47,6 +50,7 @@ void SerialCommunicator::execute(){
                         temperatureTask->onFixTemperatureEvent();
                     break;
                 default:
+                    break;
             }
         }
     }

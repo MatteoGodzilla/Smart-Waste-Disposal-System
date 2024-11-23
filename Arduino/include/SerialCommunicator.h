@@ -1,7 +1,9 @@
 #pragma once
 #include "Task.h"
-#include "TemperatureTask.h"
-#include "WasteTask.h"
+
+//forward declaration of tasks required, in order to break the cyclic dependency
+class TemperatureTask;
+class WasteTask;
 
 class SerialCommunicator : public Task {
 private:
