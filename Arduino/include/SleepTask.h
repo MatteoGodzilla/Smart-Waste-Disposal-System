@@ -1,6 +1,5 @@
 #pragma once
 #include <Arduino.h>
-#include <EnableInterrupt.h>
 #include "Task.h"
 #include "SMDSFiniteStateMachine.h"
 #include "pins.h"

@@ -1,8 +1,5 @@
 #include "SleepTask.h"
 
-//abilita enable interrupt (può essere presente soltanto in un file in tutto il progetto)
-#define LIBCALL_ENABLEINTERRUPT
-
 SleepTask::SleepTask(){
     active = true;
 }
@@ -22,9 +19,11 @@ void SleepTask::execute(){
         unsigned long deltaTime = millis();
         if((deltaTime-time) >= TSLEEP) {
             fsm->state = SLEEPING;
-            enableInterrupt(PIR, goToSleep, CHANGE);
+            //enableInterrupt(PIR, goToSleep, CHANGE);
+            attachInterrupt(PIR, goToSleep, CHANGE);
             LowPower.powerDown(SLEEP_FOREVER, ADC_OFF, BOD_OFF);
-            disableInterrupt(PIR);
+            //disableInterrupt(PIR);
+            detachInterrupt(PIR);
             fsm->state = AVAILABLE;
         }
     } else {

@@ -5,6 +5,7 @@
 
 SerialCommunicator::SerialCommunicator(){
     active = true;
+    Serial.begin(9600);
 }
 
 void SerialCommunicator::bindTemp(TemperatureTask* tTask){

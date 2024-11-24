@@ -6,7 +6,6 @@ WasteTask::WasteTask(){
     opening = false;
     closing = false;
     wasteReleased = false;
-    coolingStarted = false;
     fullAlarmManaged = true;
     temperatureAlarmManaged = true;
     motor.attach(MOTOR);
@@ -41,8 +40,10 @@ float WasteTask::getFillPercentage() {
 void WasteTask::changeState(){
     switch(fsm->state){
         case AVAILABLE:
+            Serial.println("Stato di AVAILABLE! su WasteTask");
+            digitalWrite(L1, HIGH);
             buttonState = digitalRead(OPEN_BTN);
-            if(angle == OPEN_ANGLE) { 
+            if(angle == OPEN_ANGLE) {
                 /* When servo has terminated opening procedure then go to ACCPETING_WASTE state */
                 openSince = millis();
                 fsm->state = ACCEPTING_WASTE;
@@ -56,7 +57,7 @@ void WasteTask::changeState(){
             }
             break;
         case WASTE_RECEIVED: /* At the moment the system the if the bin is full only when is closed */
-            if(angle == CLOSED_ANGLE) { 
+            if(angle == CLOSED_ANGLE) {
                 /* When servo has terminated closing procedure, then check waste level. */
                 closing = false;
                 /* Then decide the next state */
