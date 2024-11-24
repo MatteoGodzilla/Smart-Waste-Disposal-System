@@ -12,14 +12,13 @@
 #define RELEASE_ANGLE -90
 #define TIME_TO_CLOSE 10000
 #define RELEASE_TIME 5000
-/* modify this placeholder value */
-#define SPILL_TIME 10000
 /* maybe change later m/s */
 #define SOUND_SPEED 343.4
 /* distance in cm */
 #define EMPTY_DISTANCE 5
 /* distance in cm */
 #define FULL_DISTANCE 1
+/* range of possible waste level values */
 #define DISTANCE_RANGE (EMPTY_DISTANCE - FULL_DISTANCE)
 
 class WasteTask : public Task {
