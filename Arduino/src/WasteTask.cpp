@@ -5,9 +5,10 @@ WasteTask::WasteTask(){
     active = true;
     opening = false;
     closing = false;
-    emptying = false;
-    fullAlarmTriggered = false;
-    temperatureAlarmTriggered = false;
+    wasteReleased = false;
+    coolingStarted = false;
+    fullAlarmManaged = true;
+    temperatureAlarmManaged = true;
     motor.attach(MOTOR);
 }
 
@@ -40,53 +41,67 @@ float WasteTask::getFillPercentage() {
 void WasteTask::changeState(){
     switch(fsm->state){
         case AVAILABLE:
-            int openButtonState = digitalRead(OPEN_BTN);
-            if(openButtonState == HIGH) {
-                opening = true;
-            }
-            if(angle == MAX_ANGLE) { 
+            buttonState = digitalRead(OPEN_BTN);
+            if(angle == OPEN_ANGLE) { 
                 /* When servo has terminated opening procedure then go to ACCPETING_WASTE state */
-                opening = false;
+                openSince = millis();
                 fsm->state = ACCEPTING_WASTE;
             }
             break;
         case ACCEPTING_WASTE:
-            int closingButtonState = digitalRead(CLOSE_BTN);
-            if(closingButtonState == HIGH) {
+            buttonState = digitalRead(CLOSE_BTN);
+            if((buttonState == HIGH) || ((millis() - openSince) >= TIME_TO_CLOSE)) { /* CLOSE BUTTON pressed OR Timer close condition */
                 closing = true;
+                fsm->state = WASTE_RECEIVED; /* Maybe check the waste level to skip WASTE_RECEIVED state if the bin is full? */
             }
             break;
-        case WASTE_RECEIVED:
-            if(angle == MIN_ANGLE) { 
+        case WASTE_RECEIVED: /* At the moment the system the if the bin is full only when is closed */
+            if(angle == CLOSED_ANGLE) { 
                 /* When servo has terminated closing procedure, then check waste level. */
                 closing = false;
                 /* Then decide the next state */
-                fsm->state = getFillPercentage() == 100.0 ? FULL : AVAILABLE;
+                if(getFillPercentage() == 100) {
+                    fsm->state = FULL;
+                } else {
+                    fsm->state = AVAILABLE;
+                }
             }
             break;
         case EMPTYING:
-            /* Do nothing since signal is received */
-            /* On release signal received emptying = true */
-            if(angle == -MAX_ANGLE) {
+            /* Do nothing since release signal is received (someone change the state to EMPTYING)*/
+            /* On release signal received then */
+            if(angle == RELEASE_ANGLE && !timeset) {
                 /* When waste is released */
-                emptying = false;
-                closing = true;
+                opening = false;
+                openSince = millis();
+                timeset = true;
             }
-            if(angle == MIN_ANGLE) {
+            if((millis() - openSince) >= RELEASE_TIME) {
+                closing = true;
+                timeset = false;
+            }
+            if(angle == CLOSED_ANGLE) {
                 closing = false;
-                fsm->state = AVAILABLE;
+                fsm->state = getFillPercentage() == 100 ? FULL : AVAILABLE;
             }
             break;
         case FULL:
             /* Arduino is sending a signal to Dashboard */
-            /* On signal received set fullAlarmTriggered and then go to EMPTYING state */
+            /* On signal received set fullAlarmManaged to false and then go to EMPTYING state */
+            if(wasteReleased) {
+                wasteReleased = false;
+                opening = true;
+                fsm->state = EMPTYING;
+            }
             break;
         case OVERHEATING:
-            /* Arduino is sending a signal when the temperature is OK */
-            /* Then set temperatureAlarmTriggered to false and go back to latest state */
+            /* Wait for TemperatureTask to handle the problem, WasteTask in this phase is not active*/
+            if(angle != CLOSED_ANGLE) {
+                closing = true;
+            }
             break;
         case SLEEPING:
-            /* On wake up signal go back to latest state */
+            /* On wake up signal SleepTask set the state to AVAILABLE */
             break;
     }
 }
@@ -94,10 +109,10 @@ void WasteTask::changeState(){
 void WasteTask::executeState(){
     switch(fsm->state){
         case AVAILABLE:
-            if(fullAlarmTriggered) {
-                fullAlarmTriggered = false;
-                digitalWrite(L1, HIGH);
-                digitalWrite(L2, LOW);
+            fullAlarmManaged = false;
+            temperatureAlarmManaged = false;
+            if(buttonState == HIGH && !opening) {
+                opening = true;
             }
             if(opening) {
                 /* Moving the servo one degree a clock */
@@ -115,27 +130,27 @@ void WasteTask::executeState(){
             }
             break;
         case EMPTYING:
-            if(emptying) { /* Moving the servo one degree a clock to release the waste */
+            if(opening) { /* Moving the servo one degree a clock to release the waste */
                 motor.write(--angle);
             } else if (closing) { /* Moving the servo one degree a clock to close */
                 motor.write(++angle);
             }
             break;
         case FULL:
-            if(!fullAlarmTriggered && (getFillPercentage() == 100)) {
-                fullAlarmTriggered = true;
+            if(!fullAlarmManaged) {
+                fullAlarmManaged = true;
                 digitalWrite(L1, LOW);
                 digitalWrite(L2, HIGH);
             }
             break;
         case OVERHEATING:
-            if(!temperatureAlarmTriggered) {
-                temperatureAlarmTriggered = true;
+            if(!temperatureAlarmManaged) {
+                temperatureAlarmManaged = true;
                 digitalWrite(L1, LOW);
                 digitalWrite(L2, HIGH);
             }
-            if(angle != MIN_ANGLE) { /* Moving the servo one degree at a time */
-                motor.write(angle > MIN_ANGLE ? --angle : ++angle);
+            if(closing) { /* Moving the servo one degree a clock */
+                motor.write(angle > CLOSED_ANGLE ? --angle : ++angle);
             }
             break;
         case SLEEPING:
@@ -144,5 +159,5 @@ void WasteTask::executeState(){
 }
 
 void WasteTask::onEmptyEvent(){
-    
+    wasteReleased = true;
 }

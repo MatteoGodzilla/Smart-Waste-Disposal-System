@@ -7,9 +7,10 @@
 #include "SerialCommunicator.h"
 #include "LCDManager.h"
 
-#define MAX_ANGLE 90
-#define MIN_ANGLE 0
-#define MAX_WASTE 7
+#define OPEN_ANGLE 90
+#define CLOSED_ANGLE  0
+#define RELEASE_ANGLE -90
+#define TIME_TO_CLOSE 10000
 /* modify this placeholder value */
 #define SPILL_TIME 10000
 /* maybe change later m/s */
@@ -25,12 +26,15 @@ private:
     SMDSFiniteStateMachine* fsm;
     SerialCommunicator* scTask;
     Servo motor;
+    unsigned long openSince;
     signed short angle;
+    int buttonState;
+    bool timeset;
     bool opening;
     bool closing;
-    bool emptying;
-    bool fullAlarmTriggered;
-    bool temperatureAlarmTriggered;
+    bool wasteReleased;
+    bool fullAlarmManaged;
+    bool temperatureAlarmManaged;
     void executeState();
     void changeState();
     float getFillPercentage();
