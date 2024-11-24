@@ -11,6 +11,7 @@
 #define CLOSED_ANGLE  0
 #define RELEASE_ANGLE -90
 #define TIME_TO_CLOSE 10000
+#define RELEASE_TIME 5000
 /* modify this placeholder value */
 #define SPILL_TIME 10000
 /* maybe change later m/s */
