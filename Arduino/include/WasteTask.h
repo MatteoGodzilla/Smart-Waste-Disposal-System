@@ -10,6 +10,7 @@
 #define OPEN_ANGLE 90
 #define CLOSED_ANGLE  0
 #define RELEASE_ANGLE -90
+#define WASTE_THRESHOLD 0.95
 #define TIME_TO_CLOSE 10000
 #define RELEASE_TIME 5000
 /* maybe change later m/s */

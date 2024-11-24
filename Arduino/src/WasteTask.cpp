@@ -34,7 +34,7 @@ float WasteTask::getFillPercentage() {
     float tUS = pulseIn(SONAR_ECHO, HIGH);
     float t = tUS / 1000.0 / 1000.0 / 2;
     float d = EMPTY_DISTANCE - (t*SOUND_SPEED);
-    return (((DISTANCE_RANGE - d) / DISTANCE_RANGE) * 100.0);
+    return (((DISTANCE_RANGE - d) / DISTANCE_RANGE));
 }
 
 void WasteTask::changeState(){
@@ -61,11 +61,7 @@ void WasteTask::changeState(){
                 /* When servo has terminated closing procedure, then check waste level. */
                 closing = false;
                 /* Then decide the next state */
-                if(getFillPercentage() == 100) {
-                    fsm->state = FULL;
-                } else {
-                    fsm->state = AVAILABLE;
-                }
+                fsm->state = getFillPercentage() > WASTE_THRESHOLD ? FULL : AVAILABLE;
             }
             break;
         case EMPTYING:
@@ -83,7 +79,7 @@ void WasteTask::changeState(){
             }
             if(angle == CLOSED_ANGLE) {
                 closing = false;
-                fsm->state = getFillPercentage() == 100 ? FULL : AVAILABLE;
+                fsm->state = getFillPercentage() > WASTE_THRESHOLD ? FULL : AVAILABLE;
             }
             break;
         case FULL:
@@ -99,6 +95,8 @@ void WasteTask::changeState(){
             /* Wait for TemperatureTask to handle the problem, WasteTask in this phase is not active*/
             if(angle != CLOSED_ANGLE) {
                 closing = true;
+            } else if(angle == CLOSED_ANGLE) {
+                closing = false;
             }
             break;
         case SLEEPING:
