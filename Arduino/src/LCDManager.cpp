@@ -12,7 +12,7 @@ void LCDManager::bindFSM(SMDSFiniteStateMachine* fsmTask) {
 }
 
 void LCDManager::execute() {
-    if(lastState != fsm->state){
+    //if(lastState != fsm->state){
         switch(fsm->state) {
             case AVAILABLE:
                 //lcd->clear();
@@ -47,5 +47,5 @@ void LCDManager::execute() {
                 break;
         }
         lastState = fsm->state;
-    }
+    //}
 }

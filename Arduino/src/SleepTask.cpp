@@ -9,7 +9,10 @@ void SleepTask::bindFSM(SMDSFiniteStateMachine* fsmTask) {
     fsm = fsmTask;
 }
 
-void goToSleep() {}
+void goToSleep() {
+    Serial.println("IN USCITA DALLA SLEEP MODE");
+    Serial.flush();
+}
 
 void SleepTask::execute(){
     presence = digitalRead(PIR);
@@ -21,10 +24,12 @@ void SleepTask::execute(){
         if((deltaTime-time) >= TSLEEP) {
             fsm->state = SLEEPING;
             //enableInterrupt(PIR, goToSleep, CHANGE);
-            attachInterrupt(PIR, goToSleep, CHANGE);
+            attachInterrupt(digitalPinToInterrupt(PIR), goToSleep, CHANGE);
             Serial.println("ENTERING SLEEP MODE");
             Serial.flush();
             LowPower.powerDown(SLEEP_FOREVER, ADC_OFF, BOD_OFF);
+            Serial.println("RISVEGLIATO DALLA SLEEP MODE");
+            Serial.flush();
             //disableInterrupt(PIR);
             detachInterrupt(PIR);
             fsm->state = AVAILABLE;

@@ -1,3 +1,6 @@
+/*
+Authors: Carletti Lorenzo, Catena Matteo, Dall'Ara Lorenzo
+*/
 #include <Arduino.h>
 #include <Wire.h>
 #include <Servo.h>
@@ -8,9 +11,11 @@
 #include "WasteTask.h"
 #include "SleepTask.h"
 #include "LCDManager.h"
+//#include "LiquidCrystal_I2C.h"
 #include "SMDSFiniteStateMachine.h"
 
 Scheduler scheduler;
+//LiquidCrystal_I2C lcd = LiquidCrystal_I2C(0x27,20,4);
 
 void setup() {
     //Initialize pins
@@ -25,7 +30,11 @@ void setup() {
     pinMode(TEMP, INPUT);
     pinMode(SONAR_ECHO, INPUT);
 
-    //Initialize libraries
+    //Initialize LCD
+    //lcd.init();
+    //lcd.backlight();
+    //lcd.setCursor(0,0);
+    //lcd.print("CIAO MONDO");
 
     //Initialize scheduler and create tasks
 	scheduler.init();
@@ -60,7 +69,7 @@ void setup() {
 }
 
 void loop() {
-    Serial.println("UNIZIA LO SCHEDULER");
+    Serial.println("INIZIA LO SCHEDULER");
 	scheduler.schedule();
     Serial.println("FINISCE LO SCHEDULER");
     Serial.flush();

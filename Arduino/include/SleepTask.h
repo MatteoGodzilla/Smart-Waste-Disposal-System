@@ -5,7 +5,7 @@
 #include "pins.h"
 #include "LowPower.h"
 
-#define TSLEEP 5000
+#define TSLEEP 15000
 
 class SleepTask : public Task {
 private:

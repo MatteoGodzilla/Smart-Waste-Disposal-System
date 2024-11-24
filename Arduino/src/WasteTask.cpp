@@ -61,7 +61,13 @@ void WasteTask::changeState(){
                 /* When servo has terminated closing procedure, then check waste level. */
                 closing = false;
                 /* Then decide the next state */
-                fsm->state = getFillPercentage() > WASTE_THRESHOLD ? FULL : AVAILABLE;
+                if(getFillPercentage() == 100) {
+                    fsm->state = FULL;
+                    Serial.println("THE BIDONE IS FULL");
+                    Serial.flush();
+                } else {
+                    fsm->state = AVAILABLE;
+                }
             }
             break;
         case EMPTYING:
@@ -138,6 +144,8 @@ void WasteTask::executeState(){
         case FULL:
             if(!fullAlarmManaged) {
                 fullAlarmManaged = true;
+                Serial.println("THE BIDONE IS FULL SO LUCE RED");
+                Serial.flush();
                 digitalWrite(L1, LOW);
                 digitalWrite(L2, HIGH);
             }
