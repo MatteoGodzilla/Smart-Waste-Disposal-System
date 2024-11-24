@@ -26,6 +26,11 @@ private:
     SerialCommunicator* scTask;
     Servo motor;
     signed short angle;
+    bool opening;
+    bool closing;
+    bool emptying;
+    bool fullAlarmTriggered;
+    bool temperatureAlarmTriggered;
     void executeState();
     void changeState();
     float getFillPercentage();
