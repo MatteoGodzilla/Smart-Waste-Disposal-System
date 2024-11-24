@@ -2,6 +2,7 @@
 
 SleepTask::SleepTask(){
     active = true;
+    time = 0;
 }
 
 void SleepTask::bindFSM(SMDSFiniteStateMachine* fsmTask) {
@@ -21,6 +22,8 @@ void SleepTask::execute(){
             fsm->state = SLEEPING;
             //enableInterrupt(PIR, goToSleep, CHANGE);
             attachInterrupt(PIR, goToSleep, CHANGE);
+            Serial.println("ENTERING SLEEP MODE");
+            Serial.flush();
             LowPower.powerDown(SLEEP_FOREVER, ADC_OFF, BOD_OFF);
             //disableInterrupt(PIR);
             detachInterrupt(PIR);

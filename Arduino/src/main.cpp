@@ -29,8 +29,6 @@ void setup() {
 
     //Initialize scheduler and create tasks
 	scheduler.init();
-    Serial.println("INIZIALIZZAZIONE SCHEDULER");
-
     SMDSFiniteStateMachine* fsm = new SMDSFiniteStateMachine();
 
     TemperatureTask* temperatureTask = new TemperatureTask();
@@ -48,6 +46,8 @@ void setup() {
     LCDManager* lcd = new LCDManager();
     scheduler.addTask(lcd);
 
+    Serial.println("INIZIALIZZAZIONE SCHEDULER");
+
     //Bind tasks each other if necessary
     temperatureTask->bindFSM(fsm);
     temperatureTask->bindSerialCommunicator(serialCommunicatorTask);
@@ -62,4 +62,6 @@ void setup() {
 void loop() {
     Serial.println("UNIZIA LO SCHEDULER");
 	scheduler.schedule();
+    Serial.println("FINISCE LO SCHEDULER");
+    Serial.flush();
 }

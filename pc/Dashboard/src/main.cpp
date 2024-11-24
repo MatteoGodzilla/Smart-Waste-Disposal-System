@@ -10,4 +10,4 @@ public:
 	};
 };
 
-wxIMPLEMENT_APP(Main);
+wxIMPLEMENT_APP_CONSOLE(Main);
