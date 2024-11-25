@@ -19,7 +19,7 @@ void SerialThread::run(std::stop_token token) {
 	if (!connection.isOpen())
 		return;
 	while (running) {
-		mutex.lock();
+		mutexRX.lock();
 
 		//read serial line
 		std::string token = connection.readline(64);
@@ -31,10 +31,32 @@ void SerialThread::run(std::stop_token token) {
 			std::string subtoken = token.substr(2, token.find_first_of(';') - 1);
 			informations.fillPercentage = std::stof(subtoken);
 		}
-		mutex.unlock();
+		mutexRX.unlock();
+
+		mutexTX.lock();
+		if (eventQueue.size() > 0) {
+			std::cout << eventQueue.front() << std::endl;
+			switch (eventQueue.front()) {
+			case EMPTY_CONTAINER:
+				connection.write("E;");
+				break;
+			case FIX_TEMPERATURE:
+				connection.write("T;");
+				break;
+			}
+			eventQueue.pop();
+		}
+		mutexTX.unlock();
 
 		//sleep for 1 second
 		//std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
 	connection.close();
+}
+
+void SerialThread::enqueueEvent(SerialTransmitEvents event) {
+	mutexTX.lock();
+	std::cout << "ENQUEUED EVENT: " << event << std::endl;
+	eventQueue.push(event);
+	mutexTX.unlock();
 }

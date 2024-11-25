@@ -7,7 +7,9 @@
 #include "SerialThread.h"
 
 enum MyIds {
-	CHOICE_BOX
+	CHOICE_BOX,
+	BTN_EMPTY,
+	BTN_TEMPERATURE
 };
 
 class MainWindow : public wxFrame {
@@ -18,6 +20,8 @@ private:
 	void updateUI(wxTimerEvent& event);
 	void closeActiveConnection();
 	void onComboBoxSelection(wxCommandEvent& event);
+	void onButtonEmpty(wxCommandEvent& event);
+	void onButtonTemperature(wxCommandEvent& event);
 
 	wxChoice* serialDevices;
 	wxStaticText* temperatureLabel;
