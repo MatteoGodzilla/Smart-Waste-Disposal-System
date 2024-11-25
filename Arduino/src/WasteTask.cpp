@@ -2,6 +2,7 @@
 
 WasteTask::WasteTask(){
     angle = 0;
+    fillPercentage = 0.0;
     active = true;
     opening = false;
     closing = false;
@@ -38,6 +39,8 @@ float WasteTask::getFillPercentage() {
 }
 
 void WasteTask::changeState(){
+    fillPercentage = getFillPercentage();
+    scTask->sendFillPercentage(fillPercentage);
     switch(fsm->state){
         case AVAILABLE:
             Serial.println("Stato di AVAILABLE! su WasteTask");
@@ -61,7 +64,7 @@ void WasteTask::changeState(){
                 /* When servo has terminated closing procedure, then check waste level. */
                 closing = false;
                 /* Then decide the next state */
-                if(getFillPercentage() == 100) {
+                if(fillPercentage > WASTE_THRESHOLD) {
                     fsm->state = FULL;
                     Serial.println("THE BIDONE IS FULL");
                     Serial.flush();
@@ -85,7 +88,7 @@ void WasteTask::changeState(){
             }
             if(angle == CLOSED_ANGLE) {
                 closing = false;
-                fsm->state = getFillPercentage() > WASTE_THRESHOLD ? FULL : AVAILABLE;
+                fsm->state = fillPercentage > WASTE_THRESHOLD ? FULL : AVAILABLE;
             }
             break;
         case FULL:

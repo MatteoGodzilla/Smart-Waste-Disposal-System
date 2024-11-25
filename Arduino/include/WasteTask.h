@@ -36,6 +36,7 @@ private:
     bool wasteReleased;
     bool fullAlarmManaged;
     bool temperatureAlarmManaged;
+    float fillPercentage;
     void executeState();
     void changeState();
     float getFillPercentage();
