@@ -47,6 +47,7 @@ void WasteTask::changeState(){
                 fsm->state = FULL;
             } else {
                 digitalWrite(L1, HIGH);
+                digitalWrite(L2, LOW);
             }
             buttonState = digitalRead(OPEN_BTN);
             if(angle == OPEN_ANGLE) {
