@@ -7,7 +7,7 @@ WasteTask::WasteTask(){
     opening = false;
     closing = false;
     wasteReleased = false;
-    endAlarmManaged = true;
+    endAlarmManaged = false;
     fullAlarmManaged = true;
     temperatureAlarmManaged = true;
     motor.attach(MOTOR);
@@ -60,7 +60,7 @@ void WasteTask::changeState(){
                 digitalWrite(L1, HIGH);
                 digitalWrite(L2, LOW);
             }
-            buttonState = digitalRead(OPEN_BTN);
+            openButtonState = digitalRead(OPEN_BTN);
             if(angle == OPEN_ANGLE) {
                 /* When servo has terminated opening procedure then go to ACCPETING_WASTE state */
                 timeset = false;
@@ -69,9 +69,10 @@ void WasteTask::changeState(){
             }
             break;
         case ACCEPTING_WASTE:
-            buttonState = digitalRead(CLOSE_BTN);
-            if( ( buttonState == HIGH ) || ( ( millis() - timeSince ) >= TIME_TO_CLOSE ) ) { /* CLOSE BUTTON pressed OR TIMELIMIT REACHED event sent */
+            closeButtonState = digitalRead(CLOSE_BTN);
+            if( ( closeButtonState == HIGH ) || ( ( millis() - timeSince ) >= TIME_TO_CLOSE ) ) { /* CLOSE BUTTON pressed OR TIMELIMIT REACHED event sent */
                 closing = true;
+                //closeButtonState = LOW; ATTENZIONE-----------------------------------
                 fsm->state = WASTE_RECEIVED; /* Maybe check the waste level to skip WASTE_RECEIVED state if the bin is full? */
             }
             break;
@@ -126,8 +127,9 @@ void WasteTask::executeState(){
             motor.write(CLOSED_ANGLE);
             fullAlarmManaged = false;
             temperatureAlarmManaged = false;
-            if( (buttonState == HIGH) && !opening ) {
+            if( (openButtonState == HIGH) && !opening ) {
                 opening = true;
+                //openButtonState = LOW; ATTENZIONE-----------------------------------
             }
             if( opening ) {
                 /* Moving the servo one degree a clock */
@@ -185,8 +187,10 @@ void WasteTask::executeState(){
             }
             break;
         case SLEEPING:
-            motor.write(CLOSED_ANGLE);
-            angle = CLOSED_ANGLE;
+            if (angle != CLOSED_ANGLE) {
+                motor.write(CLOSED_ANGLE);
+                angle = CLOSED_ANGLE;
+            }
             break;
     }
 }

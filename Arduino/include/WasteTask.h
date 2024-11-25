@@ -30,7 +30,8 @@ private:
     Servo motor;
     unsigned long timeSince;
     signed short angle;
-    int buttonState;
+    int openButtonState;
+    int closeButtonState;
     float fillPercentage;
     bool timeset;
     bool opening;

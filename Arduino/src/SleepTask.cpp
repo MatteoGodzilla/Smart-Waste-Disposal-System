@@ -32,7 +32,7 @@ void SleepTask::execute(){
     }
     if(presence == LOW) {
         unsigned long deltaTime = millis();
-        if((deltaTime-time) >= TSLEEP) {
+        if((deltaTime-time) >= TSLEEP && fsm->state == AVAILABLE) {
             fsm->state = SLEEPING;
         }
     } else {
