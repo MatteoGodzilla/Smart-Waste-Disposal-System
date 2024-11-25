@@ -34,8 +34,8 @@ float WasteTask::getFillPercentage() {
 
     float tUS = pulseIn(SONAR_ECHO, HIGH);
     float t = tUS / 1000.0 / 1000.0 / 2;
-    float d = EMPTY_DISTANCE - (t*SOUND_SPEED);
-    return (((DISTANCE_RANGE - d) / DISTANCE_RANGE));
+    float d = (t*SOUND_SPEED);
+    return (((EMPTY_DISTANCE - d) / DISTANCE_RANGE));
 }
 
 void WasteTask::changeState(){
@@ -43,7 +43,7 @@ void WasteTask::changeState(){
     scTask->sendFillPercentage(fillPercentage);
     switch(fsm->state){
         case AVAILABLE:
-            Serial.println("Stato di AVAILABLE! su WasteTask");
+            //Serial.println("Stato di AVAILABLE! su WasteTask");
             digitalWrite(L1, HIGH);
             buttonState = digitalRead(OPEN_BTN);
             if(angle == OPEN_ANGLE) {
@@ -66,7 +66,7 @@ void WasteTask::changeState(){
                 /* Then decide the next state */
                 if(fillPercentage > WASTE_THRESHOLD) {
                     fsm->state = FULL;
-                    Serial.println("THE BIDONE IS FULL");
+                    //Serial.println("THE BIDONE IS FULL");
                     Serial.flush();
                 } else {
                     fsm->state = AVAILABLE;

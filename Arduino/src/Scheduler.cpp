@@ -8,7 +8,7 @@ void Scheduler::init(){
 }
 
 bool Scheduler::addTask(Task* task){
-    if(nTask < NUMTASKS-1) {
+    if(nTask < NUMTASKS) {
         tasks[nTask] = task;
         nTask++;
         return true;

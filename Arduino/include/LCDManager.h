@@ -5,7 +5,7 @@
 
 class LCDManager : public Task{
 private:
-    LiquidCrystal_I2C* lcd;
+    LiquidCrystal_I2C lcd;
     SMDSFiniteStateMachine* fsm;
     State lastState;
 public:
