@@ -35,7 +35,6 @@ void TemperatureTask::execute(){
     tempPrev = temp;
 }
 
-//called by
 void TemperatureTask::onFixTemperatureEvent(){
-
+    fsm->state = AVAILABLE;
 }

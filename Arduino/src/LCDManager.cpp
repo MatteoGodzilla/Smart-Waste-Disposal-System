@@ -21,12 +21,15 @@ void LCDManager::execute() {
         lcd.clear();
         switch(fsm->state) {
             case AVAILABLE:
+                lcd.backlight();
                 lcd.setCursor(0,0);
                 lcd.print("PRESS OPEN TO ENTER WASTE");
                 break;
             case ACCEPTING_WASTE:
                 lcd.setCursor(0,0);
-                lcd.print("PRESS CLOSE WHEN DONE");
+                lcd.print("PRESS CLOSE");
+                lcd.setCursor(0,1);
+                lcd.print("WHEN DONE");
                 break;
             case WASTE_RECEIVED:
                 lcd.setCursor(0,0);

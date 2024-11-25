@@ -43,11 +43,11 @@ void WasteTask::changeState(){
     scTask->sendFillPercentage(fillPercentage);
     switch(fsm->state){
         case AVAILABLE:
-            //Serial.println("Stato di AVAILABLE! su WasteTask");
             if( fillPercentage > WASTE_THRESHOLD ) {
                 fsm->state = FULL;
+            } else {
+                digitalWrite(L1, HIGH);
             }
-            digitalWrite(L1, HIGH); /* WHO ADDED THIS? WHY DO THAT EVERYTIME?? */
             buttonState = digitalRead(OPEN_BTN);
             if(angle == OPEN_ANGLE) {
                 /* When servo has terminated opening procedure then go to ACCPETING_WASTE state */
@@ -110,6 +110,7 @@ void WasteTask::changeState(){
 void WasteTask::executeState(){
     switch(fsm->state){
         case AVAILABLE:
+            motor.write(CLOSED_ANGLE);
             fullAlarmManaged = false;
             temperatureAlarmManaged = false;
             if( (buttonState == HIGH) && !opening ) {
@@ -169,6 +170,8 @@ void WasteTask::executeState(){
             }
             break;
         case SLEEPING:
+            motor.write(CLOSED_ANGLE);
+            angle = CLOSED_ANGLE;
             break;
     }
 }

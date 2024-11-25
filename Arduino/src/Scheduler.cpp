@@ -1,8 +1,5 @@
 #include "Scheduler.h"
 
-//TODO:REMOVE
-#include <Arduino.h>
-
 void Scheduler::init(){
     nTask = 0;
 }

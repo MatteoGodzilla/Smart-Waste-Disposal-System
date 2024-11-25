@@ -15,6 +15,17 @@ void goToSleep() {
 }
 
 void SleepTask::execute(){
+    if(fsm->state == SLEEPING) {
+        attachInterrupt(digitalPinToInterrupt(PIR), goToSleep, CHANGE);
+        Serial.println("ENTERING SLEEP MODE");
+        Serial.flush();
+        LowPower.powerDown(SLEEP_FOREVER, ADC_OFF, BOD_OFF);
+        Serial.println("RISVEGLIATO DALLA SLEEP MODE");
+        Serial.flush();
+        detachInterrupt(PIR);
+        fsm->state = AVAILABLE;
+    }
+
     presence = digitalRead(PIR);
     if(presence == LOW && presencePrev == HIGH) {
         time = millis();
@@ -23,16 +34,6 @@ void SleepTask::execute(){
         unsigned long deltaTime = millis();
         if((deltaTime-time) >= TSLEEP) {
             fsm->state = SLEEPING;
-            //enableInterrupt(PIR, goToSleep, CHANGE);
-            attachInterrupt(digitalPinToInterrupt(PIR), goToSleep, CHANGE);
-            Serial.println("ENTERING SLEEP MODE");
-            Serial.flush();
-            LowPower.powerDown(SLEEP_FOREVER, ADC_OFF, BOD_OFF);
-            Serial.println("RISVEGLIATO DALLA SLEEP MODE");
-            Serial.flush();
-            //disableInterrupt(PIR);
-            detachInterrupt(PIR);
-            fsm->state = AVAILABLE;
         }
     } else {
         time = millis();
