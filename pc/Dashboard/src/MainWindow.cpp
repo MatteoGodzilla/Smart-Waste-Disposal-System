@@ -80,17 +80,15 @@ void MainWindow::onComboBoxSelection(wxCommandEvent& event) {
 }
 
 void MainWindow::onButtonEmpty(wxCommandEvent& event) {
-	//std::cout << EMPTY_CONTAINER << std::endl;
 	if (serialThread != nullptr) {
+		serialThread->enqueueEvent(EMPTY_CONTAINER);
 	}
-	serialThread->enqueueEvent(EMPTY_CONTAINER);
 }
 
 void MainWindow::onButtonTemperature(wxCommandEvent& event) {
-	//std::cout << FIX_TEMPERATURE << std::endl;
 	if (serialThread != nullptr) {
+		serialThread->enqueueEvent(FIX_TEMPERATURE);
 	}
-	serialThread->enqueueEvent(FIX_TEMPERATURE);
 }
 
 
