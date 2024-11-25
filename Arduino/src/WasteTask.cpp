@@ -7,6 +7,7 @@ WasteTask::WasteTask(){
     opening = false;
     closing = false;
     wasteReleased = false;
+    endAlarmManaged = true;
     fullAlarmManaged = true;
     temperatureAlarmManaged = true;
     motor.attach(MOTOR);
@@ -35,7 +36,10 @@ float WasteTask::getFillPercentage() {
     float tUS = pulseIn(SONAR_ECHO, HIGH);
     float t = tUS / 1000.0 / 1000.0 / 2;
     float d = (t*SOUND_SPEED);
-    return (((EMPTY_DISTANCE - d) / DISTANCE_RANGE));
+    float percent = (((EMPTY_DISTANCE - d) / DISTANCE_RANGE));
+    percent = (percent > 1.0) ? 1.0 : percent;
+    percent = (percent < 0.0) ? 0.0: percent;
+    return percent;
 }
 
 void WasteTask::changeState(){
@@ -43,22 +47,30 @@ void WasteTask::changeState(){
     scTask->sendFillPercentage(fillPercentage);
     switch(fsm->state){
         case AVAILABLE:
-            if( fillPercentage > WASTE_THRESHOLD ) {
+            if( ( fillPercentage > WASTE_THRESHOLD ) && !timeset) {
+                timeset = true;
+                timeSince = millis();
+            }
+            if( ( fillPercentage > WASTE_THRESHOLD ) && ( ( millis() - timeSince ) > FULL_TOLERANCE_TIME ) ) {
+                timeset = false;
                 fsm->state = FULL;
-            } else {
+            }
+            if( !endAlarmManaged ) {
+                endAlarmManaged = true;
                 digitalWrite(L1, HIGH);
                 digitalWrite(L2, LOW);
             }
             buttonState = digitalRead(OPEN_BTN);
             if(angle == OPEN_ANGLE) {
                 /* When servo has terminated opening procedure then go to ACCPETING_WASTE state */
-                openSince = millis();
+                timeset = false;
+                timeSince = millis();
                 fsm->state = ACCEPTING_WASTE;
             }
             break;
         case ACCEPTING_WASTE:
             buttonState = digitalRead(CLOSE_BTN);
-            if( ( buttonState == HIGH ) || ( ( millis() - openSince ) >= TIME_TO_CLOSE ) ) { /* CLOSE BUTTON pressed OR TIMELIMIT REACHED event sent */
+            if( ( buttonState == HIGH ) || ( ( millis() - timeSince ) >= TIME_TO_CLOSE ) ) { /* CLOSE BUTTON pressed OR TIMELIMIT REACHED event sent */
                 closing = true;
                 fsm->state = WASTE_RECEIVED; /* Maybe check the waste level to skip WASTE_RECEIVED state if the bin is full? */
             }
@@ -72,16 +84,16 @@ void WasteTask::changeState(){
         case EMPTYING:
             /* Do nothing since release signal is received (someone change the state to EMPTYING)*/
             /* On release signal received then */
-            if( (angle == RELEASE_ANGLE) && !timeset ) {
+            if( ( angle == RELEASE_ANGLE ) && !timeset ) {
                 /* When waste is released */
-                openSince = millis();
+                timeSince = millis();
                 timeset = true;
             }
-            if( (millis() - openSince) >= RELEASE_TIME ) {
+            if( ( millis() - timeSince ) >= RELEASE_TIME ) {
                 closing = true;
                 timeset = false;
             }
-            if(angle == CLOSED_ANGLE) {
+            if( angle == CLOSED_ANGLE ) {
                 fsm->state = fillPercentage > WASTE_THRESHOLD ? FULL : AVAILABLE;
             }
             break;
@@ -149,6 +161,7 @@ void WasteTask::executeState(){
             break;
         case FULL:
             if( !fullAlarmManaged ) {
+                endAlarmManaged = false;
                 fullAlarmManaged = true;
                 Serial.println("INTERVENTION REQUIRED: THE BIN IS FULL");
                 Serial.flush();
@@ -158,6 +171,7 @@ void WasteTask::executeState(){
             break;
         case OVERHEATING:
             if( !temperatureAlarmManaged ) {
+                endAlarmManaged = false;
                 temperatureAlarmManaged = true;
                 Serial.println("INTERVENTION REQUIRED: THE BIN TEMPERATURE IS OVER THE MAXIMUM THRESHOLD");
                 Serial.flush();

@@ -12,6 +12,7 @@
 #define RELEASE_ANGLE -90
 #define WASTE_THRESHOLD 0.95
 #define TIME_TO_CLOSE 10000
+#define FULL_TOLERANCE_TIME 1000
 #define RELEASE_TIME 5000
 /* maybe change later m/s */
 #define SOUND_SPEED 343.4
@@ -27,16 +28,17 @@ private:
     SMDSFiniteStateMachine* fsm;
     SerialCommunicator* scTask;
     Servo motor;
-    unsigned long openSince;
+    unsigned long timeSince;
     signed short angle;
     int buttonState;
+    float fillPercentage;
     bool timeset;
     bool opening;
     bool closing;
     bool wasteReleased;
+    bool endAlarmManaged;
     bool fullAlarmManaged;
     bool temperatureAlarmManaged;
-    float fillPercentage;
     void executeState();
     void changeState();
     float getFillPercentage();
