@@ -48,6 +48,7 @@ void WasteTask::changeState(){
             buttonState = digitalRead(OPEN_BTN);
             if(angle == OPEN_ANGLE) {
                 /* When servo has terminated opening procedure then go to ACCPETING_WASTE state */
+                opening = false;
                 openSince = millis();
                 fsm->state = ACCEPTING_WASTE;
             }
