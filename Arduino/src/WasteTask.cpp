@@ -44,58 +44,52 @@ void WasteTask::changeState(){
     switch(fsm->state){
         case AVAILABLE:
             //Serial.println("Stato di AVAILABLE! su WasteTask");
-            digitalWrite(L1, HIGH);
+            if( fillPercentage > WASTE_THRESHOLD ) {
+                fsm->state = FULL;
+            }
+            digitalWrite(L1, HIGH); /* WHO ADDED THIS? WHY DO THAT EVERYTIME?? */
             buttonState = digitalRead(OPEN_BTN);
             if(angle == OPEN_ANGLE) {
                 /* When servo has terminated opening procedure then go to ACCPETING_WASTE state */
-                opening = false;
                 openSince = millis();
                 fsm->state = ACCEPTING_WASTE;
             }
             break;
         case ACCEPTING_WASTE:
             buttonState = digitalRead(CLOSE_BTN);
-            if((buttonState == HIGH) || ((millis() - openSince) >= TIME_TO_CLOSE)) { /* CLOSE BUTTON pressed OR Timer close condition */
+            if( ( buttonState == HIGH ) || ( ( millis() - openSince ) >= TIME_TO_CLOSE ) ) { /* CLOSE BUTTON pressed OR TIMELIMIT REACHED event sent */
                 closing = true;
                 fsm->state = WASTE_RECEIVED; /* Maybe check the waste level to skip WASTE_RECEIVED state if the bin is full? */
             }
             break;
         case WASTE_RECEIVED: /* At the moment the system the if the bin is full only when is closed */
-            if(angle == CLOSED_ANGLE) {
-                /* When servo has terminated closing procedure, then check waste level. */
-                closing = false;
+            if( angle == CLOSED_ANGLE ) {
                 /* Then decide the next state */
-                if(fillPercentage > WASTE_THRESHOLD) {
-                    fsm->state = FULL;
-                    //Serial.println("THE BIDONE IS FULL");
-                    Serial.flush();
-                } else {
-                    fsm->state = AVAILABLE;
-                }
+                fsm->state = fillPercentage > WASTE_THRESHOLD ? FULL : AVAILABLE;
             }
             break;
         case EMPTYING:
             /* Do nothing since release signal is received (someone change the state to EMPTYING)*/
             /* On release signal received then */
-            if(angle == RELEASE_ANGLE && !timeset) {
+            if( (angle == RELEASE_ANGLE) && !timeset ) {
                 /* When waste is released */
-                opening = false;
                 openSince = millis();
                 timeset = true;
             }
-            if((millis() - openSince) >= RELEASE_TIME) {
+            if( (millis() - openSince) >= RELEASE_TIME ) {
                 closing = true;
                 timeset = false;
             }
             if(angle == CLOSED_ANGLE) {
-                closing = false;
                 fsm->state = fillPercentage > WASTE_THRESHOLD ? FULL : AVAILABLE;
             }
             break;
         case FULL:
             /* Arduino is sending a signal to Dashboard */
             /* On signal received set fullAlarmManaged to false and then go to EMPTYING state */
-            if(wasteReleased) {
+            if( fillPercentage < WASTE_THRESHOLD ) { /* Just in case the PIR send a fake alarm */
+                fsm->state = AVAILABLE;
+            } else if( wasteReleased ) {
                 wasteReleased = false;
                 opening = true;
                 fsm->state = EMPTYING;
@@ -103,10 +97,8 @@ void WasteTask::changeState(){
             break;
         case OVERHEATING:
             /* Wait for TemperatureTask to handle the problem, WasteTask in this phase is not active*/
-            if(angle != CLOSED_ANGLE) {
+            if( angle != CLOSED_ANGLE ) {
                 closing = true;
-            } else if(angle == CLOSED_ANGLE) {
-                closing = false;
             }
             break;
         case SLEEPING:
@@ -120,12 +112,14 @@ void WasteTask::executeState(){
         case AVAILABLE:
             fullAlarmManaged = false;
             temperatureAlarmManaged = false;
-            if(buttonState == HIGH && !opening) {
+            if( (buttonState == HIGH) && !opening ) {
                 opening = true;
             }
-            if(opening) {
+            if( opening ) {
                 /* Moving the servo one degree a clock */
-                motor.write(++angle);
+                motor.write(OPEN_ANGLE);
+                angle = OPEN_ANGLE;
+                opening = false;
             }
             break;
         case ACCEPTING_WASTE:
@@ -133,35 +127,45 @@ void WasteTask::executeState(){
             /* Then fsm->WASTE_RECEIVED */
             break;
         case WASTE_RECEIVED:
-            if(closing) {
-                /* Moving the servo one degree a clock */
-                motor.write(--angle);
+            if( closing ) {
+                /* Moving the servo to close the bin */
+                motor.write(CLOSED_ANGLE);
+                angle = CLOSED_ANGLE;
+                closing = false;
             }
             break;
         case EMPTYING:
-            if(opening) { /* Moving the servo one degree a clock to release the waste */
-                motor.write(--angle);
-            } else if (closing) { /* Moving the servo one degree a clock to close */
-                motor.write(++angle);
+            if( opening ) { /* Moving the servo one degree a clock to release the waste */
+                motor.write(RELEASE_ANGLE);
+                angle = RELEASE_ANGLE;
+                opening = false;
+            } else if ( closing ) { /* Moving the servo to close the bin */
+                motor.write(CLOSED_ANGLE);
+                angle = CLOSED_ANGLE;
+                closing = false;
             }
             break;
         case FULL:
-            if(!fullAlarmManaged) {
+            if( !fullAlarmManaged ) {
                 fullAlarmManaged = true;
-                Serial.println("THE BIDONE IS FULL SO LUCE RED");
+                Serial.println("INTERVENTION REQUIRED: THE BIN IS FULL");
                 Serial.flush();
                 digitalWrite(L1, LOW);
                 digitalWrite(L2, HIGH);
             }
             break;
         case OVERHEATING:
-            if(!temperatureAlarmManaged) {
+            if( !temperatureAlarmManaged ) {
                 temperatureAlarmManaged = true;
+                Serial.println("INTERVENTION REQUIRED: THE BIN TEMPERATURE IS OVER THE MAXIMUM THRESHOLD");
+                Serial.flush();
                 digitalWrite(L1, LOW);
                 digitalWrite(L2, HIGH);
             }
-            if(closing) { /* Moving the servo one degree a clock */
-                motor.write(angle > CLOSED_ANGLE ? --angle : ++angle);
+            if( closing ) { /* Moving the servo to close the bin */
+                motor.write(CLOSED_ANGLE);
+                angle = CLOSED_ANGLE;
+                closing = false;
             }
             break;
         case SLEEPING:
