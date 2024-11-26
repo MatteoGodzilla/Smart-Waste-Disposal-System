@@ -22,15 +22,20 @@ void SerialThread::run(std::stop_token token) {
 		mutexRX.lock();
 
 		//read serial line
-		std::string token = connection.readline(64);
-		if (token.starts_with("T:")) {
-			std::string subtoken = token.substr(2, token.find_first_of(';') - 1);
-			informations.temperature = std::stof(subtoken);
-			//std::cout << subtoken << std::endl << std::endl;
-		} else if (token.starts_with("F:")) {
-			std::string subtoken = token.substr(2, token.find_first_of(';') - 1);
-			informations.fillPercentage = std::stof(subtoken);
+		try {
+			std::string token = connection.readline(64);
+			std::cout << token;
+			if (token.starts_with("T:")) {
+				std::string subtoken = token.substr(2, token.find_first_of(';') - 1);
+				informations.temperature = std::stof(subtoken);
+				//std::cout << subtoken << std::endl << std::endl;
+			} else if (token.starts_with("F:")) {
+				std::string subtoken = token.substr(2, token.find_first_of(';') - 1);
+				informations.fillPercentage = std::stof(subtoken);
+				//std::cout << subtoken << std::endl << std::endl;
+			}
 		}
+		catch (std::exception e) {}
 		mutexRX.unlock();
 
 		mutexTX.lock();

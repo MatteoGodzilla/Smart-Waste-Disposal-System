@@ -69,7 +69,7 @@ void WasteTask::changeState(){
                 //should not be necessary
                 //motor.write(CLOSED_ANGLE);
                 //angle = CLOSED_ANGLE;
-                Serial.print("AAAA");
+                //Serial.print("AAAA");
                 fsm->state = FULL;
             }
 
