@@ -1,7 +1,7 @@
 #include "WasteTask.h"
 
 WasteTask::WasteTask(){
-    angle = 0;
+    angle = CLOSED_ANGLE;
     fillPercentage = 0.0;
     active = true;
     opening = false;
@@ -51,7 +51,7 @@ void WasteTask::changeState(){
                 timeset = true;
                 timeSince = millis();
             }
-            if( ( fillPercentage > WASTE_THRESHOLD ) && ( ( millis() - timeSince ) > FULL_TOLERANCE_TIME ) ) {
+            if( ( ( millis() - timeSince ) > FULL_TOLERANCE_TIME ) && ( fillPercentage > WASTE_THRESHOLD ) ) {
                 timeset = false;
                 fsm->state = FULL;
             }
@@ -61,7 +61,7 @@ void WasteTask::changeState(){
                 digitalWrite(L2, LOW);
             }
             openButtonState = digitalRead(OPEN_BTN);
-            if(angle == OPEN_ANGLE) {
+            if( angle == OPEN_ANGLE ) {
                 /* When servo has terminated opening procedure then go to ACCPETING_WASTE state */
                 timeset = false;
                 timeSince = millis();
@@ -71,12 +71,11 @@ void WasteTask::changeState(){
         case ACCEPTING_WASTE:
             closeButtonState = digitalRead(CLOSE_BTN);
             if( ( closeButtonState == HIGH ) || ( ( millis() - timeSince ) >= TIME_TO_CLOSE ) ) { /* CLOSE BUTTON pressed OR TIMELIMIT REACHED event sent */
-                closing = true;
-                //closeButtonState = LOW; ATTENZIONE-----------------------------------
+                //closeButtonState = LOW; ATTENZIONE - CREDO NON SERVA
                 fsm->state = WASTE_RECEIVED; /* Maybe check the waste level to skip WASTE_RECEIVED state if the bin is full? */
             }
             break;
-        case WASTE_RECEIVED: /* At the moment the system the if the bin is full only when is closed */
+        case WASTE_RECEIVED: /* At the moment the system check if the bin is full only when is closed */
             if( angle == CLOSED_ANGLE ) {
                 /* Then decide the next state */
                 fsm->state = fillPercentage > WASTE_THRESHOLD ? FULL : AVAILABLE;
@@ -101,10 +100,17 @@ void WasteTask::changeState(){
         case FULL:
             /* Arduino is sending a signal to Dashboard */
             /* On signal received set fullAlarmManaged to false and then go to EMPTYING state */
-            if( fillPercentage < WASTE_THRESHOLD ) { /* Just in case the PIR send a fake alarm */
+            if( fillPercentage < WASTE_THRESHOLD && !timeset) { /* Just in case the PIR send a fake alarm */
+                timeset = true;
+                timeSince = millis();
+            }
+            if( ( (millis() - timeSince) > FULL_TOLERANCE_TIME ) && ( fillPercentage < WASTE_THRESHOLD ) ) {
+                timeset = false;
                 fsm->state = AVAILABLE;
-            } else if( wasteReleased ) {
+            }
+            if( wasteReleased ) {
                 wasteReleased = false;
+                timeset = false;
                 opening = true;
                 fsm->state = EMPTYING;
             }
@@ -124,18 +130,15 @@ void WasteTask::changeState(){
 void WasteTask::executeState(){
     switch(fsm->state){
         case AVAILABLE:
-            motor.write(CLOSED_ANGLE);
+            if(angle != CLOSED_ANGLE) {
+                motor.write(CLOSED_ANGLE); /* Who wrote this?? It was with no guard condition, every clock it was trying to close! */
+            }
             fullAlarmManaged = false;
             temperatureAlarmManaged = false;
-            if( (openButtonState == HIGH) && !opening ) {
-                opening = true;
-                //openButtonState = LOW; ATTENZIONE-----------------------------------
-            }
-            if( opening ) {
-                /* Moving the servo one degree a clock */
+            if( ( openButtonState == HIGH ) ) { /* Then open the bin */
                 motor.write(OPEN_ANGLE);
                 angle = OPEN_ANGLE;
-                opening = false;
+                //openButtonState = LOW; ATTENZIONE - CARLO NON CREDO SERVA VEDIAMO LASCIANDOLO COMMENTATO.
             }
             break;
         case ACCEPTING_WASTE:
@@ -143,15 +146,13 @@ void WasteTask::executeState(){
             /* Then fsm->WASTE_RECEIVED */
             break;
         case WASTE_RECEIVED:
-            if( closing ) {
                 /* Moving the servo to close the bin */
                 motor.write(CLOSED_ANGLE);
                 angle = CLOSED_ANGLE;
                 closing = false;
-            }
             break;
         case EMPTYING:
-            if( opening ) { /* Moving the servo one degree a clock to release the waste */
+            if( opening ) { /* Moving the servo to release the waste */
                 motor.write(RELEASE_ANGLE);
                 angle = RELEASE_ANGLE;
                 opening = false;
