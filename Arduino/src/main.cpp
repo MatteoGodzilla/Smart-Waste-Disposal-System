@@ -11,11 +11,9 @@ Authors: Carletti Lorenzo, Catena Matteo, Dall'Ara Lorenzo
 #include "WasteTask.h"
 #include "SleepTask.h"
 #include "LCDManager.h"
-//#include "LiquidCrystal_I2C.h"
 #include "SMDSFiniteStateMachine.h"
 
 Scheduler scheduler;
-//LiquidCrystal_I2C lcd = LiquidCrystal_I2C(0x27,20,4);
 
 void setup() {
     //Initialize pins
@@ -29,12 +27,6 @@ void setup() {
     pinMode(PIR, INPUT);
     pinMode(TEMP, INPUT);
     pinMode(SONAR_ECHO, INPUT);
-
-    //Initialize LCD
-    //lcd.init();
-    //lcd.backlight();
-    //lcd.setCursor(0,0);
-    //lcd.print("CIAO MONDO");
 
     //Initialize scheduler and create tasks
 	scheduler.init();
@@ -55,7 +47,7 @@ void setup() {
     LCDManager* lcd = new LCDManager();
     scheduler.addTask(lcd);
 
-    Serial.println("INIZIALIZZAZIONE SCHEDULER");
+    //Serial.println("INIZIALIZZAZIONE SCHEDULER");
 
     //Bind tasks each other if necessary
     temperatureTask->bindFSM(fsm);
@@ -69,8 +61,8 @@ void setup() {
 }
 
 void loop() {
-    Serial.println("INIZIA LO SCHEDULER");
+    //Serial.println("INIZIA LO SCHEDULER");
 	scheduler.schedule();
-    Serial.println("FINISCE LO SCHEDULER");
-    Serial.flush();
+    //Serial.println("FINISCE LO SCHEDULER");
+    //Serial.flush();
 }

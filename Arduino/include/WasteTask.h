@@ -6,14 +6,18 @@
 #include "SMDSFiniteStateMachine.h"
 #include "SerialCommunicator.h"
 #include "LCDManager.h"
+#include "ElapsedTimer.h"
 
 #define OPEN_ANGLE 90
 #define CLOSED_ANGLE  0
-#define RELEASE_ANGLE -90
-#define WASTE_THRESHOLD 0.95
+#define EMPTYING_ANGLE -90
+
 #define TIME_TO_CLOSE 10000
 #define FULL_TOLERANCE_TIME 1000
-#define RELEASE_TIME 5000
+#define EMPTYING_TIME 5000
+#define ACCEPTED_WASTE_DELAY 4000
+
+#define WASTE_THRESHOLD 0.95
 /* maybe change later m/s */
 #define SOUND_SPEED 343.4
 /* distance in m */
@@ -28,18 +32,15 @@ private:
     SMDSFiniteStateMachine* fsm;
     SerialCommunicator* scTask;
     Servo motor;
-    unsigned long timeSince;
-    signed short angle;
-    int openButtonState;
-    int closeButtonState;
+
+    ElapsedTimer fullTolleranceTimer;
+    ElapsedTimer userCanSpillTimer;
+    ElapsedTimer showAcceptedWasteTimer;
+    ElapsedTimer emptyingSimulationTimer;
+    bool receivedEmptyEvent;
     float fillPercentage;
-    bool timeset;
-    bool opening;
-    bool closing;
-    bool wasteReleased;
-    bool endAlarmManaged;
-    bool fullAlarmManaged;
-    bool temperatureAlarmManaged;
+
+    void updateTimers();
     void executeState();
     void changeState();
     float getFillPercentage();

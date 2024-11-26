@@ -1,6 +1,8 @@
 #include "TemperatureTask.h"
 
-TemperatureTask::TemperatureTask(){
+TemperatureTask::TemperatureTask()
+    :temperatureHighTimer(MAXTEMPTIME)
+{
     active = true;
     time = 0;
 }
@@ -23,16 +25,16 @@ void TemperatureTask::execute(){
     */
     float temp = ((value * 0.00488) - 0.5) / 0.01;
     scTask->sendTemperature(temp);
-    if(temp >= MAXTEMP && tempPrev < MAXTEMP) {
-        time = millis(); //Start control time for MAXTEMPTIME
+
+    if(temp < MAXTEMP){
+        temperatureHighTimer.reset();
     }
-    if(temp >= MAXTEMP) {
-        unsigned long deltaTime = millis(); //Time in which MAXTEMP is still outdated
-        if((deltaTime - time) >= MAXTEMPTIME) {
-            fsm->state = OVERHEATING;
-        }
+
+    temperatureHighTimer.update();
+
+    if(temperatureHighTimer.isOver() && (fsm->state == AVAILABLE || fsm->state == ACCEPTING_WASTE || fsm->state == FULL)){
+        fsm->state = OVERHEATING;
     }
-    tempPrev = temp;
 }
 
 void TemperatureTask::onFixTemperatureEvent(){

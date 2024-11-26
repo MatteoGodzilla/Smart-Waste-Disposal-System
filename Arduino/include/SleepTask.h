@@ -4,14 +4,17 @@
 #include "SMDSFiniteStateMachine.h"
 #include "pins.h"
 #include "LowPower.h"
+#include "ElapsedTimer.h"
 
 #define TSLEEP 15000
 
 class SleepTask : public Task {
 private:
     SMDSFiniteStateMachine* fsm;
+    ElapsedTimer noPresenceTimer;
     int presence;
-    int presencePrev = LOW;
+
+    State lastState = AVAILABLE;
     unsigned long time;
 public:
     SleepTask();

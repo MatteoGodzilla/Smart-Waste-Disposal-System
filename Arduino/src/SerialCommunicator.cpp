@@ -20,6 +20,7 @@ void SerialCommunicator::sendTemperature(float celsius){
     Serial.print("T:");
     Serial.print(celsius);
     Serial.println(';');
+    Serial.flush();
 }
 
 //percentage is a value from 0 to 1
@@ -27,6 +28,7 @@ void SerialCommunicator::sendFillPercentage(float percentage){
     Serial.print("F:");
     Serial.print(percentage);
     Serial.println(';');
+    Serial.flush();
 }
 
 void SerialCommunicator::execute(){
