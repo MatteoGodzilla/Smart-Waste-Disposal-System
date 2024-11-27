@@ -12,19 +12,22 @@
 #define CLOSED_ANGLE  0
 #define EMPTYING_ANGLE -90
 
+/* TIMERS CONSTANTS */
 #define TIME_TO_CLOSE 10000
 #define FULL_TOLERANCE_TIME 1000
 #define EMPTYING_TIME 5000
 #define ACCEPTED_WASTE_DELAY 4000
 
+/* MAXIMUM WASTE FILLING PERCENTAGE */
 #define WASTE_THRESHOLD 0.95
-/* maybe change later m/s */
+
+/* SPEED OF LIGHT (meters/seconds) */
 #define SOUND_SPEED 343.4
-/* distance in m */
+/* WASTE DISTANCE FROM SONAR WHEN THE BIN IS EMPTY (meters)*/
 #define EMPTY_DISTANCE 0.50
-/* distance in m */
+/* WASTE DISTANCE FROM SONAR WHEN THE BIN IS FULL (meters) */
 #define FULL_DISTANCE 0.10
-/* range of possible waste level values */
+/* DISTANCE RANGE BETWEEN EMPTY AND FULL (meters) */
 #define DISTANCE_RANGE (EMPTY_DISTANCE - FULL_DISTANCE)
 
 class WasteTask : public Task {
@@ -39,7 +42,7 @@ private:
     ElapsedTimer emptyingSimulationTimer;
     bool receivedEmptyEvent;
     float fillPercentage;
-
+    void setAlarm(bool alarmed);
     void updateTimers();
     void executeState();
     void changeState();
