@@ -67,8 +67,8 @@ void WasteTask::changeState(){
                 fsm->state = ACCEPTING_WASTE;
             } else if( fullTolleranceTimer.isOver() && ( fillPercentage > WASTE_THRESHOLD ) ) {
                 /*
-                *  When the fullToleranceTime is over then the Finite State Machine checks
-                *  if the waste level is over WASTE_THRESHOLD and if it is then send Finite State Machine to FULL state.
+                *  When the fullToleranceTime is over then the Finite State Machine checks if the waste level is over WASTE_THRESHOLD
+                *  and if it is then send Finite State Machine to FULL state.
                 */
                 fsm->state = FULL;
             }
