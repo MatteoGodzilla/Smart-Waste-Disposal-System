@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:132.0) Gecko/20100101 Firefox/132.0" version="24.9.0">
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36" version="24.9.2">
   <diagram name="Smart Waste Disposal System" id="m504Svn_j1PcIuuZ6F1k">
-    <mxGraphModel dx="989" dy="546" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1034" dy="412" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -29,7 +29,7 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="FPB_D4KCe8muQl1L-en8-1" value="&lt;div&gt;WASTE LEVEL &amp;gt;= D1&lt;/div&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" edge="1" parent="1" source="uQsDXdNOKyueaVVcTPaE-1" target="uQsDXdNOKyueaVVcTPaE-6">
+        <mxCell id="FPB_D4KCe8muQl1L-en8-1" value="&lt;div&gt;WASTE LEVEL &amp;gt;= D1&lt;/div&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" parent="1" source="uQsDXdNOKyueaVVcTPaE-1" target="uQsDXdNOKyueaVVcTPaE-6" edge="1">
           <mxGeometry x="0.6364" y="60" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
@@ -51,13 +51,12 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="xzr3BZmMDXvMHTvj6FKW-14" value="d-empty pressed&lt;div&gt;/ emptying container&lt;/div&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontSize=12;startSize=8;endSize=8;endArrow=open;endFill=0;fillColor=#d5e8d4;strokeColor=#000000;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="uQsDXdNOKyueaVVcTPaE-6" target="uQsDXdNOKyueaVVcTPaE-1" edge="1">
-          <mxGeometry x="0.0116" relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="710" y="540" />
-              <mxPoint x="710" y="170" />
-            </Array>
-            <mxPoint as="offset" />
+        <mxCell id="435T1Q-emo2P5JwmbpbQ-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;endArrow=open;endFill=0;" edge="1" parent="1" source="uQsDXdNOKyueaVVcTPaE-6" target="435T1Q-emo2P5JwmbpbQ-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="435T1Q-emo2P5JwmbpbQ-3" value="&lt;span style=&quot;font-size: 12px;&quot;&gt;d-empty pressed&lt;/span&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="435T1Q-emo2P5JwmbpbQ-2">
+          <mxGeometry x="-0.1333" y="-2" relative="1" as="geometry">
+            <mxPoint x="60" y="-112" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="uQsDXdNOKyueaVVcTPaE-6" value="Container Full" style="html=1;align=center;verticalAlign=top;rounded=1;absoluteArcSize=1;arcSize=10;dashed=0;whiteSpace=wrap;" parent="1" vertex="1">
@@ -133,6 +132,21 @@
         </mxCell>
         <mxCell id="wK7e6p_EYHckqaxGnOha-3" value="Waste Received" style="html=1;align=center;verticalAlign=top;rounded=1;absoluteArcSize=1;arcSize=10;dashed=0;whiteSpace=wrap;" parent="1" vertex="1">
           <mxGeometry x="500" y="330" width="140" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="435T1Q-emo2P5JwmbpbQ-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;endArrow=open;endFill=0;" edge="1" parent="1" source="435T1Q-emo2P5JwmbpbQ-1" target="uQsDXdNOKyueaVVcTPaE-1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="750" y="170" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="435T1Q-emo2P5JwmbpbQ-5" value="after T3" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="435T1Q-emo2P5JwmbpbQ-4">
+          <mxGeometry x="-0.0982" y="2" relative="1" as="geometry">
+            <mxPoint x="-29" y="8" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="435T1Q-emo2P5JwmbpbQ-1" value="Emptying" style="html=1;align=center;verticalAlign=top;rounded=1;absoluteArcSize=1;arcSize=10;dashed=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="680" y="260" width="140" height="40" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
