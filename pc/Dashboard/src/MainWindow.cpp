@@ -4,10 +4,11 @@ wxBEGIN_EVENT_TABLE(MainWindow, wxFrame)
 	EVT_CHOICE(CHOICE_BOX, MainWindow::onComboBoxSelection)
 	EVT_BUTTON(BTN_EMPTY, MainWindow::onButtonEmpty)
 	EVT_BUTTON(BTN_TEMPERATURE, MainWindow::onButtonTemperature)
+	EVT_COMMAND(SERIAL_THREAD_ID, SERIAL_INFO_EVENT, MainWindow::onUpdateUI)
 wxEND_EVENT_TABLE()
 
 MainWindow::MainWindow()
-	: wxFrame(NULL, wxID_ANY, "SWDS Dashboard", wxDefaultPosition, wxSize(1024, 768))
+	: wxFrame(NULL, WINDOW, "SWDS Dashboard", wxDefaultPosition, wxSize(1024, 768))
 {
 	//Initialize Gui
 	wxBoxSizer* rootSizer = new wxBoxSizer(wxVERTICAL);
@@ -26,7 +27,7 @@ MainWindow::MainWindow()
 
 	wxBoxSizer* mainRightSizer = new wxBoxSizer(wxVERTICAL);
 	temperatureLabel = new wxStaticText(this, wxID_ANY, "Current temperature: ###");
-	fillLabel = new wxStaticText(this, wxID_ANY, "Current fill percentage: ###");
+	fillLabel = new wxStaticText(this, wxID_ANY, "Current fill percentage: ###%");
 	mainRightSizer->Add(temperatureLabel, wxSizerFlags(1).Border());
 	mainRightSizer->Add(fillLabel, wxSizerFlags(1).Border());
 
@@ -51,28 +52,23 @@ MainWindow::MainWindow()
 		serialDevices->Append(a.description);
 	}
 	serialThread = nullptr;
-	timer = new wxTimer(this);
-	Bind(wxEVT_TIMER, &MainWindow::updateUI, this);
-	timer->Start(100);
+	//DEBUG PURPOSES
+	
+	serialThread = new SerialThread(this);
 }
 
-void MainWindow::updateUI(wxTimerEvent& event) {
-	if (serialThread == nullptr) {
-		return;
-	}
-	serialThread->mutexRX.lock();
-	SerialInformations copy = serialThread->informations;
-	serialThread->mutexRX.unlock();
+void MainWindow::onUpdateUI(wxCommandEvent& event) {
+	SerialInformations* info = (SerialInformations*)event.GetClientData();
 
-	temperatureLabel->SetLabelText("Current temperature: " + std::to_string((int)copy.temperature));
-	fillLabel->SetLabelText("Current fill percentage: " + std::to_string((int)(copy.fillPercentage * 100)));
+	temperatureLabel->SetLabelText("Current temperature: " + std::to_string((int)info->temperature));
+	fillLabel->SetLabelText("Current fill percentage: " + std::to_string((int)(info->fillPercentage * 100)) + "%");
 }
 
 void MainWindow::onComboBoxSelection(wxCommandEvent& event) {
 	serial::PortInfo info = possibleConnections.at(serialDevices->GetSelection());
 	try {
 		closeActiveConnection();
-		serialThread = new SerialThread(info);
+		serialThread = new SerialThread(this, info);
 	}
 	catch (serial::IOException exception) {
 		wxMessageBox("There was an error opening the serial port");
@@ -103,5 +99,4 @@ void MainWindow::closeActiveConnection() {
 
 MainWindow::~MainWindow() {
 	closeActiveConnection();
-	timer->Stop();
 }
