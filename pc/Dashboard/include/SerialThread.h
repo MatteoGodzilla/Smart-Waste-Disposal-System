@@ -11,8 +11,6 @@
 
 class SerialThread : public std::jthread {
 public:
-	//ONLY USED FOR DEBUG, TO REMOVE
-	SerialThread(wxFrame* mainWindow);
 
 	SerialThread();
 	SerialThread(wxEvtHandler* mainWindow, serial::PortInfo portInfo);

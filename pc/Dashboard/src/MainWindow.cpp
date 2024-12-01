@@ -52,9 +52,6 @@ MainWindow::MainWindow()
 		serialDevices->Append(a.description);
 	}
 	serialThread = nullptr;
-	//DEBUG PURPOSES
-	
-	serialThread = new SerialThread(this);
 }
 
 void MainWindow::onUpdateUI(wxCommandEvent& event) {
