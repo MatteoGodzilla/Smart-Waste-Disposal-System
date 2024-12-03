@@ -24,7 +24,7 @@ void SerialThread::run(std::stop_token token) {
 		//read serial line
 		try {
 			std::string token = connection.readline(64);
-			//std::cout << token;
+			std::cout << token;
 			if (token.starts_with("T:")) {
 				std::string subtoken = token.substr(2, token.find_first_of(';') - 1);
 				informations.temperature = std::stof(subtoken);

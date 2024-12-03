@@ -120,6 +120,7 @@ void WasteTask::changeState(){
                 motor.write(EMPTYING_ANGLE);
                 fsm->state = EMPTYING;
                 receivedEmptyEvent = false;
+                emptyingSimulationTimer.reset();
             }
             break;
         case OVERHEATING:
@@ -140,12 +141,14 @@ void WasteTask::executeState(){
         case AVAILABLE:
         case ACCEPTING_WASTE:
         case WASTE_RECEIVED:
-        case EMPTYING:
             setAlarm(false);
             break;
         case FULL:
         case OVERHEATING:
             setAlarm(true);
+            motor.write(CLOSED_ANGLE);
+            break;
+        case EMPTYING:
             break;
         case SLEEPING:
             break;
@@ -163,7 +166,6 @@ void WasteTask::setAlarm(bool alarmed) {
     if(alarmed) {
         digitalWrite(L1, LOW);
         digitalWrite(L2, HIGH);
-        motor.write(CLOSED_ANGLE);
     } else {
         digitalWrite(L1, HIGH);
         digitalWrite(L2, LOW);

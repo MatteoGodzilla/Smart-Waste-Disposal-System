@@ -8,9 +8,9 @@
 #include "LCDManager.h"
 #include "ElapsedTimer.h"
 
-#define OPEN_ANGLE 90
-#define CLOSED_ANGLE  0
-#define EMPTYING_ANGLE -90
+#define OPEN_ANGLE 0
+#define CLOSED_ANGLE 90
+#define EMPTYING_ANGLE 180
 
 /* TIMERS CONSTANTS */
 #define TIME_TO_CLOSE 10000

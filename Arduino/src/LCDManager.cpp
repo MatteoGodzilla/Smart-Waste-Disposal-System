@@ -36,6 +36,7 @@ void LCDManager::execute() {
                 lcd.print("WASTE RECEIVED");
                 break;
             case FULL:
+            case EMPTYING:
                 lcd.setCursor(0,0);
                 lcd.print("CONTAINER FULL");
                 break;
@@ -45,8 +46,6 @@ void LCDManager::execute() {
                 break;
             case SLEEPING:
                 lcd.noBacklight();
-                break;
-            case EMPTYING:
                 break;
         }
         lastState = fsm->state;
