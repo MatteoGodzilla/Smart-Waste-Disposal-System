@@ -8,7 +8,7 @@ wxBEGIN_EVENT_TABLE(MainWindow, wxFrame)
 wxEND_EVENT_TABLE()
 
 MainWindow::MainWindow()
-	: wxFrame(NULL, WINDOW, "SWDS Dashboard", wxDefaultPosition, wxSize(1024, 768))
+	: wxFrame(NULL, WINDOW, "Operator Dashboard", wxDefaultPosition, wxSize(1024, 768))
 {
 	//Initialize Gui
 	wxBoxSizer* rootSizer = new wxBoxSizer(wxVERTICAL);
@@ -35,8 +35,8 @@ MainWindow::MainWindow()
 	mainSizer->Add(mainRightSizer, wxSizerFlags().Border(wxRIGHT));
 
 	wxBoxSizer* bottomSizer = new wxBoxSizer(wxHORIZONTAL);
-	wxButton* emptyButton = new wxButton(this, BTN_EMPTY, "Empty", wxDefaultPosition, wxSize(100, 30));
-	wxButton* fixTemperatureButton = new wxButton(this, BTN_TEMPERATURE, "Fix Temperature", wxDefaultPosition, wxSize(100, 30));
+	wxButton* emptyButton = new wxButton(this, BTN_EMPTY, "Empty the container", wxDefaultPosition, wxSize(100, 30));
+	wxButton* fixTemperatureButton = new wxButton(this, BTN_TEMPERATURE, "RESTORE", wxDefaultPosition, wxSize(100, 30));
 	bottomSizer->Add(emptyButton, wxSizerFlags(1).Border());
 	bottomSizer->Add(fixTemperatureButton, wxSizerFlags(1).Border());
 
